@@ -4,20 +4,21 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Exploder : MonoBehaviour
 {
+    private float _explosionRadius = 50;
+    private float _explosionForse = 250;
+
     private Rigidbody _objectToExplode;
 
     private void Start()
     {
         _objectToExplode = GetComponent<Rigidbody>();
+        ChangeForseAndRadiuse();
     }
 
     public void BlowUp()
     {
-        float explosionRadius = 70;
-        float explosionForse = 250;
-
-        foreach (Rigidbody explodableObgect in GetExplodableObjects(explosionRadius))
-            explodableObgect.AddExplosionForce(explosionForse, transform.position, explosionRadius);
+        foreach (Rigidbody explodableObgect in GetExplodableObjects(_explosionRadius))
+            explodableObgect.AddExplosionForce(_explosionForse, transform.position, _explosionRadius);
 
         Destroy(_objectToExplode.gameObject);
     }
@@ -33,5 +34,27 @@ public class Exploder : MonoBehaviour
                 objects.Add(hit.attachedRigidbody);
 
         return objects;
+    }
+
+    private void ChangeForseAndRadiuse()
+    {
+        Vector3 halfScale = new(0.5f, 0.5f, 0.5f);
+        Vector3 quarterScale = new(0.25f, 0.25f, 0.25f);
+
+        if(_objectToExplode.transform.localScale == halfScale)
+        {
+            _explosionRadius = 100;
+            _explosionForse = 250;
+        }
+        else if(_objectToExplode.transform.localScale == quarterScale)
+        {
+            _explosionRadius = 150;
+            _explosionForse = 300;
+        }
+        else
+        {
+            _explosionRadius = 200;
+            _explosionForse = 350;
+        }
     }
 }
